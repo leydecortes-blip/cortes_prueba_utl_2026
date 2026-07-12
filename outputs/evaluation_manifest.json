@@ -3,7 +3,7 @@
     "nombre": "CORTES PINTO LEYDE KATERINE",
     "email": "cortesleidyk@gmail.com",
     "repo_url": "https://github.com/leydecortes-blip/cortes_prueba_utl_2026",
-    "generado": "2026-07-12T14:26:17"
+    "generado": "2026-07-12T15:48:52"
   },
   "reto_1": {
     "municipios_ok": true,
@@ -34,7 +34,7 @@
       "partidos": 25,
       "candidatos": 1127,
       "votos": 4508,
-      "carga_log": 64
+      "carga_log": 72
     },
     "lider_se": {
       "DUITAMA": {
@@ -53,6 +53,232 @@
         "partido_lider": "PACTO",
         "votos_se": 20651
       }
+    }
+  },
+  "reto_3": {
+    "tarea_3_1": {
+      "ok": true,
+      "columnas": [
+        "municipio",
+        "puesto_codigo",
+        "puesto",
+        "votos_ca_verde",
+        "votos_se_verde",
+        "arrastre_se_ca"
+      ],
+      "filas": [
+        {
+          "municipio": "DUITAMA",
+          "puesto_codigo": "0700079",
+          "puesto": "DUITAMA",
+          "votos_ca_verde": 6507,
+          "votos_se_verde": 8371,
+          "arrastre_se_ca": 1.286
+        },
+        {
+          "municipio": "PAIPA",
+          "puesto_codigo": "0700181",
+          "puesto": "PAIPA",
+          "votos_ca_verde": 7171,
+          "votos_se_verde": 4161,
+          "arrastre_se_ca": 0.58
+        },
+        {
+          "municipio": "SOGAMOSO",
+          "puesto_codigo": "0700277",
+          "puesto": "SOGAMOSO",
+          "votos_ca_verde": 8086,
+          "votos_se_verde": 8195,
+          "arrastre_se_ca": 1.013
+        },
+        {
+          "municipio": "TUNJA",
+          "puesto_codigo": "0700001",
+          "puesto": "TUNJA",
+          "votos_ca_verde": 15836,
+          "votos_se_verde": 16296,
+          "arrastre_se_ca": 1.029
+        }
+      ]
+    },
+    "tarea_3_2": {
+      "ok": true,
+      "columnas": [
+        "municipio",
+        "puesto",
+        "mesa",
+        "candidato",
+        "partido",
+        "corporacion",
+        "votos_candidato",
+        "votos_partido",
+        "pct_dentro_partido"
+      ],
+      "filas": [
+        {
+          "municipio": "TUNJA",
+          "puesto": "0700001",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Pacto Histórico",
+          "corporacion": "SE",
+          "votos_candidato": 20651,
+          "votos_partido": 20651,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "TUNJA",
+          "puesto": "0700001",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Pacto Histórico",
+          "corporacion": "CA",
+          "votos_candidato": 19943,
+          "votos_partido": 19943,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "DUITAMA",
+          "puesto": "0700079",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Pacto Histórico",
+          "corporacion": "CA",
+          "votos_candidato": 18479,
+          "votos_partido": 18479,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "DUITAMA",
+          "puesto": "0700079",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Pacto Histórico",
+          "corporacion": "SE",
+          "votos_candidato": 15423,
+          "votos_partido": 15423,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "SOGAMOSO",
+          "puesto": "0700277",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Pacto Histórico",
+          "corporacion": "SE",
+          "votos_candidato": 13957,
+          "votos_partido": 13957,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "SOGAMOSO",
+          "puesto": "0700277",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Pacto Histórico",
+          "corporacion": "CA",
+          "votos_candidato": 13163,
+          "votos_partido": 13163,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "TUNJA",
+          "puesto": "0700001",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Centro Democrático",
+          "corporacion": "SE",
+          "votos_candidato": 10613,
+          "votos_partido": 10613,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "DUITAMA",
+          "puesto": "0700079",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Centro Democrático",
+          "corporacion": "SE",
+          "votos_candidato": 9205,
+          "votos_partido": 9205,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "SOGAMOSO",
+          "puesto": "0700277",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Centro Democrático",
+          "corporacion": "SE",
+          "votos_candidato": 8182,
+          "votos_partido": 8182,
+          "pct_dentro_partido": 100.0
+        },
+        {
+          "municipio": "PAIPA",
+          "puesto": "0700181",
+          "mesa": "TOTAL",
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "Pacto Histórico",
+          "corporacion": "SE",
+          "votos_candidato": 3669,
+          "votos_partido": 3669,
+          "pct_dentro_partido": 100.0
+        }
+      ]
+    },
+    "tarea_3_3": {
+      "ok": true,
+      "columnas": [
+        "candidato",
+        "partido",
+        "votos_cand",
+        "votos_partido_ca",
+        "votos_se_partido",
+        "atribucion_se"
+      ],
+      "filas": [
+        {
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "PACTO",
+          "votos_cand": 54804,
+          "votos_partido_ca": 54804,
+          "votos_se_partido": 53700,
+          "atribucion_se": 53700.0
+        },
+        {
+          "candidato": "YAMIT NOE HURTADO NEIRA",
+          "partido": "VERDE",
+          "votos_cand": 11206,
+          "votos_partido_ca": 37600,
+          "votos_se_partido": 37023,
+          "atribucion_se": 11034.0
+        },
+        {
+          "candidato": "SOLO POR LA LISTA",
+          "partido": "CD",
+          "votos_cand": 6181,
+          "votos_partido_ca": 20494,
+          "votos_se_partido": 30771,
+          "atribucion_se": 9280.5
+        },
+        {
+          "candidato": "JAIME RAUL SALAMANCA TORRES",
+          "partido": "VERDE",
+          "votos_cand": 9406,
+          "votos_partido_ca": 37600,
+          "votos_se_partido": 37023,
+          "atribucion_se": 9261.7
+        },
+        {
+          "candidato": "RAMIRO BARRAGAN ADAME",
+          "partido": "VERDE",
+          "votos_cand": 8936,
+          "votos_partido_ca": 37600,
+          "votos_se_partido": 37023,
+          "atribucion_se": 8798.9
+        }
+      ]
     }
   }
 }
