@@ -1,9 +1,9 @@
 {
   "meta": {
-    "nombre": "leyde katerine cortes",
+    "nombre": "CORTES PINTO LEYDE KATERINE",
     "email": "cortesleidyk@gmail.com",
     "repo_url": "https://github.com/leydecortes-blip/cortes_prueba_utl_2026",
-    "generado": "2026-07-12T13:45:33"
+    "generado": "2026-07-12T14:26:17"
   },
   "reto_1": {
     "municipios_ok": true,
@@ -14,25 +14,6 @@
       "SOGAMOSO",
       "TUNJA"
     ],
-    "filas_por_municipio": {
-      "DUITAMA": {
-        "CA": 63,
-        "SE": 1064
-      },
-      "PAIPA": {
-        "CA": 63,
-        "SE": 1064
-      },
-      "SOGAMOSO": {
-        "CA": 63,
-        "SE": 1064
-      },
-      "TUNJA": {
-        "CA": 63,
-        "SE": 1064
-      }
-    },
-    "total_votos_bd": 4508,
     "archivos_raw": [
       "DUITAMA_CA.json",
       "DUITAMA_SE.json",
@@ -43,6 +24,35 @@
       "TUNJA_CA.json",
       "TUNJA_SE.json"
     ],
-    "archivos_raw_conteo": "8/8"
+    "archivos_raw_ok": true
+  },
+  "reto_2": {
+    "filas_por_tabla": {
+      "municipios": 4,
+      "puestos": 4,
+      "mesas": 4,
+      "partidos": 25,
+      "candidatos": 1127,
+      "votos": 4508,
+      "carga_log": 64
+    },
+    "lider_se": {
+      "DUITAMA": {
+        "partido_lider": "PACTO",
+        "votos_se": 15423
+      },
+      "PAIPA": {
+        "partido_lider": "VERDE",
+        "votos_se": 4161
+      },
+      "SOGAMOSO": {
+        "partido_lider": "PACTO",
+        "votos_se": 13957
+      },
+      "TUNJA": {
+        "partido_lider": "PACTO",
+        "votos_se": 20651
+      }
+    }
   }
 }
