@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "nombre": "leyde katerine cortes",
+    "email": "cortesleidyk@gmail.com",
+    "repo_url": "https://github.com/leydecortes-blip/cortes_prueba_utl_2026",
+    "generado": "2026-07-12T13:45:33"
+  },
+  "reto_1": {
+    "municipios_ok": true,
+    "municipios_conteo": "4/4",
+    "municipios": [
+      "DUITAMA",
+      "PAIPA",
+      "SOGAMOSO",
+      "TUNJA"
+    ],
+    "filas_por_municipio": {
+      "DUITAMA": {
+        "CA": 63,
+        "SE": 1064
+      },
+      "PAIPA": {
+        "CA": 63,
+        "SE": 1064
+      },
+      "SOGAMOSO": {
+        "CA": 63,
+        "SE": 1064
+      },
+      "TUNJA": {
+        "CA": 63,
+        "SE": 1064
+      }
+    },
+    "total_votos_bd": 4508,
+    "archivos_raw": [
+      "DUITAMA_CA.json",
+      "DUITAMA_SE.json",
+      "PAIPA_CA.json",
+      "PAIPA_SE.json",
+      "SOGAMOSO_CA.json",
+      "SOGAMOSO_SE.json",
+      "TUNJA_CA.json",
+      "TUNJA_SE.json"
+    ],
+    "archivos_raw_conteo": "8/8"
+  }
+}
