@@ -6,6 +6,11 @@
 -- Un porcentaje alto indica que el candidato es el unico referente del
 -- partido en ese puesto de votacion, lo que puede reflejar liderazgo
 -- local muy fuerte o lista cerrada con un unico candidato conocido.
+--
+-- Nota: se excluye "SOLO POR LA LISTA" de la lista de candidatos reportados,
+-- porque es el voto no preferente (por el partido, sin escoger persona) y no
+-- es un candidato. Ese voto SI permanece dentro del total del partido, porque
+-- es voto real del partido; solo no aparece como fila en el ranking.
 
 WITH voto_partido_mesa AS (
     SELECT v.mesa_id, c.partido_id, SUM(v.votos) AS votos_partido
@@ -32,5 +37,6 @@ JOIN mesas             me  ON me.id  = v.mesa_id
 JOIN puestos           pu  ON pu.id  = me.puesto_id
 JOIN municipios        mu  ON mu.id  = pu.municipio_id
 WHERE vpm.votos_partido > 0
+  AND ca.nombre_norm <> 'SOLO POR LA LISTA'
   AND 1.0 * v.votos / vpm.votos_partido > 0.60
 ORDER BY pct_dentro_partido DESC, votos_candidato DESC;

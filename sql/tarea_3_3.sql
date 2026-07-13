@@ -12,6 +12,12 @@
 -- un candidato del Pacto Historico con votos moderados en Camara puede superar
 -- en atribucion a un candidato de Verde con mas votos, si el Pacto tiene
 -- mayor caudal en Senado para ese conjunto de municipios.
+--
+-- Nota: se excluye "SOLO POR LA LISTA" (voto no preferente) del ranking de
+-- candidatos, porque no es una persona. Ese voto permanece dentro del total
+-- del partido en Camara (denominador), pues es voto real del partido; de esa
+-- forma cada candidato conserva su participacion real y la porcion del voto de
+-- lista simplemente no se atribuye a ninguna persona.
 
 WITH cand_ca AS (
     SELECT c.id AS candidato_id, c.nombre_norm, pa.canonico,
@@ -20,6 +26,7 @@ WITH cand_ca AS (
     JOIN candidatos c  ON c.id  = v.candidato_id
     JOIN partidos   pa ON pa.id = c.partido_id
     WHERE pa.corporacion = 'CA'
+      AND c.nombre_norm <> 'SOLO POR LA LISTA'
     GROUP BY c.id
 ),
 partido_ca AS (

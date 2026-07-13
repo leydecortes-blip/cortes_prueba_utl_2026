@@ -9,9 +9,6 @@ Uso:
 URL real descubierta con F12:
   https://resultadospreccongreso2026.registraduria.gov.co/json/ACT/{CORP}/{divipol}.json
   CORP = CA (Camara) o SE (Senado)
-
-Campos JSON extraidos:
-  codpar, nomcan, apecan, codcan, cedula, vot, pvot, amb, metota
 """
 import os
 import sys
@@ -50,8 +47,9 @@ MUNICIPIOS = {
 CORPORACIONES = ["CA", "SE"]
 
 
-def url_votos(divipol, corp):
-    return f"{BASE_URL}/json/ACT/{corp}/{divipol}.json"
+def url_votos(codigo, corp):
+    # La API soporta consultas agregadas al nivel del codigo que se le pase (Puesto, Zona o Municipio)
+    return f"{BASE_URL}/json/ACT/{corp}/{codigo}.json"
 
 
 def _nombre_partido(codpar, corp):
@@ -72,7 +70,7 @@ def _nombre_partido(codpar, corp):
     return NOMBRES.get((codpar, corp), f"Partido {codpar}")
 
 
-def parse_json(payload, municipio, divipol, corp):
+def parse_json(payload, municipio, divipol, corp, puesto_cod="", puesto_nom="", mesa_num="TOTAL"):
     records = []
     camaras = payload.get("camaras", [])
     if not camaras:
@@ -95,9 +93,9 @@ def parse_json(payload, municipio, divipol, corp):
             records.append(dict(
                 municipio        = municipio,
                 divipol          = divipol,
-                puesto_codigo    = divipol,
-                puesto_nombre    = municipio,
-                mesa             = "TOTAL",
+                puesto_codigo    = puesto_cod or divipol,
+                puesto_nombre    = puesto_nom or municipio,
+                mesa             = str(mesa_num),
                 corporacion      = corp,
                 codpar           = int(codpar),
                 partido_nombre   = _nombre_partido(int(codpar), corp),
@@ -114,87 +112,176 @@ def fetch_json(url, retries=4, backoff=1.5, timeout=30):
         try:
             req = urllib.request.Request(url, headers=HEADERS)
             with urllib.request.urlopen(req, timeout=timeout) as r:
-                return json.loads(r.read().decode("utf-8"))
-        except Exception as e:
-            last   = e
+                data = r.read().decode("utf-8")
+                return json.loads(data)
+        except json.JSONDecodeError:
+            return None
+        except urllib.error.HTTPError as e:
+            if e.code in (404, 403):
+                return None
+            last = e
             espera = backoff ** intento
-            print(f"  [retry {intento}/{retries}] ({e}) espero {espera:.1f}s")
+            time.sleep(espera)
+        except Exception as e:
+            last = e
+            espera = backoff ** intento
             time.sleep(espera)
     raise RuntimeError(f"Fallo tras {retries} intentos: {url} -> {last}")
 
 
-def cargar_offline(municipio, corp):
+def cargar_offline(identificador, corp):
     for carpeta in (os.path.join(DB_DIR, "raw"), os.path.join(ROOT, "sample_data")):
-        ruta = os.path.join(carpeta, f"{municipio}_{corp}.json")
+        ruta = os.path.join(carpeta, f"{identificador}_{corp}.json")
         if os.path.exists(ruta):
             with open(ruta, encoding="utf-8") as f:
                 return json.load(f)
     return None
 
 
-def preflight(municipios):
-    print("PREFLIGHT - conteo de mesas por municipio (sin descargar votos):")
-    total = 0
+def preflight(municipios, offline=False):
+    print("PREFLIGHT - Conteo de puestos de votacion investigando el nomenclador...")
+    url_nomenclator = f"{BASE_URL}/json/nomenclator.json"
+    
+    if offline:
+        ruta_nomenclator_local = os.path.join(ROOT, "nomenclator.json")
+        if not os.path.exists(ruta_nomenclator_local):
+            print("Error: No se encuentra nomenclator.json local.")
+            return
+        with open(ruta_nomenclator_local, "r", encoding="utf-8") as f:
+            datos_nomenclator = json.load(f)
+    else:
+        try:
+            datos_nomenclator = fetch_json(url_nomenclator)
+        except Exception as e:
+            print(f"Error al descargar el nomenclador: {e}")
+            return
+
+    total_puestos_global = 0
     for muni in municipios:
         divipol = MUNICIPIOS[muni]
-        try:
-            payload = fetch_json(url_votos(divipol, "CA"))
-            mesas   = payload.get("totales", {}).get("act", {}).get("metota", "?")
-            print(f"  {muni}  divipol {divipol}  {mesas} mesas")
-            if str(mesas).isdigit():
-                total += int(mesas)
-        except Exception as e:
-            print(f"  {muni}  error: {e}")
-    print(f"TOTAL estimado: {total} mesas en {len(municipios)} municipios")
+        # El nomenclador repite cada puesto en varios bloques; contamos codigos unicos.
+        codigos_unicos = set()
+        for ambito in datos_nomenclator.get("amb", []):
+            for item in ambito.get("ambitos", []):
+                # Contamos exclusivamente el Nivel 6 (Puestos de Votacion)
+                if item.get("l") == 6:
+                    codigo_puesto = item.get("c", "")
+                    if codigo_puesto.startswith(divipol):
+                        codigos_unicos.add(codigo_puesto)
+        puestos_muni = len(codigos_unicos)
+        print(f"  {muni} (divipol {divipol}): {puestos_muni} puestos encontrados.")
+        total_puestos_global += puestos_muni
+    print(f"TOTAL estimado a procesar: {total_puestos_global} puestos ({total_puestos_global * 2} consultas de API en total).")
 
 
 def run(municipios, offline=False):
     raw_dir = os.path.join(DB_DIR, "raw")
     os.makedirs(raw_dir, exist_ok=True)
 
+    url_nomenclator = f"{BASE_URL}/json/nomenclator.json"
+    
+    if offline:
+        print("Modo offline activo. Buscando copia local del nomenclador...")
+        ruta_nomenclator_local = os.path.join(ROOT, "nomenclator.json")
+        if not os.path.exists(ruta_nomenclator_local):
+            sys.exit("Error: No se encuentra el nomenclator.json local.")
+        with open(ruta_nomenclator_local, "r", encoding="utf-8") as f_nom:
+            datos_nomenclator = json.load(f_nom)
+    else:
+        print("Investigando el nomenclador en vivo desde la Registraduria...")
+        try:
+            datos_nomenclator = fetch_json(url_nomenclator)
+            with open(os.path.join(ROOT, "nomenclator.json"), "w", encoding="utf-8") as f_bak:
+                json.dump(datos_nomenclator, f_bak, ensure_ascii=False)
+        except Exception as e:
+            sys.exit(f"Error critico al descargar el nomenclador: {e}")
+
     conn = etl.get_connection()
     etl.apply_schema(conn)
     gran = {"ins": 0, "skip": 0}
 
     for muni in municipios:
-        divipol = MUNICIPIOS[muni]
-        print(f"\n[{muni}]  divipol {divipol}")
+        divipol_muni = MUNICIPIOS[muni]
+        print(f"\n[{muni}] Buscando puestos de votacion para divipol {divipol_muni}...")
 
-        for corp in CORPORACIONES:
-            print(f"  {corp} ...", end=" ", flush=True)
+        puestos_descubiertos = []
+        codigos_vistos = set()
+        for ambito in datos_nomenclator.get("amb", []):
+            for item in ambito.get("ambitos", []):
+                # Extraemos directamente los Puestos (Nivel 6) en lugar de las mesas
+                if item.get("l") == 6:
+                    codigo_puesto = item.get("c", "")
+                    # El nomenclador repite cada puesto en varios bloques de eleccion;
+                    # nos quedamos solo con la primera aparicion de cada codigo.
+                    if codigo_puesto.startswith(divipol_muni) and codigo_puesto not in codigos_vistos:
+                        codigos_vistos.add(codigo_puesto)
+                        nombre_puesto = item.get("n", f"PUESTO {codigo_puesto}")
 
-            if offline:
-                payload = cargar_offline(muni, corp)
-                if payload is None:
-                    print("sin datos offline, saltando.")
-                    continue
-                fuente = "offline"
-            else:
-                try:
-                    url     = url_votos(divipol, corp)
-                    payload = fetch_json(url)
-                    ruta_raw = os.path.join(raw_dir, f"{muni}_{corp}.json")
-                    with open(ruta_raw, "w", encoding="utf-8") as f:
-                        json.dump(payload, f, ensure_ascii=False)
-                    fuente = "API"
-                except Exception as e:
-                    print(f"\n  API fallo ({e}), intentando offline...")
-                    payload = cargar_offline(muni, corp)
+                        puestos_descubiertos.append({
+                            "codigo": codigo_puesto,
+                            "puesto_cod": codigo_puesto,
+                            "puesto_nom": nombre_puesto,
+                            "mesa_num": "TOTAL_PUESTO"
+                        })
+
+        print(f"  Se descubrieron {len(puestos_descubiertos)} puestos de votacion en {muni}.")
+
+        if not puestos_descubiertos:
+            continue
+
+        puestos_procesados = 0
+        for puesto in puestos_descubiertos:
+            cod_puesto = puesto["codigo"]
+            puesto_nom = puesto["puesto_nom"]
+            num_mesa   = puesto["mesa_num"]
+
+            for corp in CORPORACIONES:
+                if offline:
+                    payload = cargar_offline(cod_puesto, corp)
                     if payload is None:
-                        print(f"  Sin datos offline. Saltando {muni}-{corp}.")
                         continue
-                    fuente = "offline"
+                else:
+                    try:
+                        url = url_votos(cod_puesto, corp)
+                        payload = fetch_json(url)
+                        
+                        # Pausa leve de cortesia
+                        time.sleep(0.1)
+                        
+                        if payload is None:
+                            continue
 
-            records = parse_json(payload, muni, divipol, corp)
-            stats   = etl.load_records(conn, records, municipio_hint=f"{muni}-{corp}")
-            ins     = sum(s["ins"]  for s in stats.values())
-            skip    = sum(s["skip"] for s in stats.values())
-            gran["ins"]  += ins
-            gran["skip"] += skip
-            print(f"{len(records)} registros ({fuente}) +{ins} insertados, {skip} omitidos")
+                        ruta_raw = os.path.join(raw_dir, f"{cod_puesto}_{corp}.json")
+                        with open(ruta_raw, "w", encoding="utf-8") as f_raw:
+                            json.dump(payload, f_raw, ensure_ascii=False)
+                    except Exception:
+                        payload = cargar_offline(cod_puesto, corp)
+                        if payload is None:
+                            continue
+
+                records = parse_json(
+                    payload=payload,
+                    municipio=muni,
+                    divipol=divipol_muni,
+                    corp=corp,
+                    puesto_cod=cod_puesto,
+                    puesto_nom=puesto_nom,
+                    mesa_num=num_mesa
+                )
+                
+                if records:
+                    stats = etl.load_records(conn, records, municipio_hint=f"{muni}-{corp}-Puesto{cod_puesto}")
+                    gran["ins"] += sum(s["ins"] for s in stats.values())
+                    gran["skip"] += sum(s["skip"] for s in stats.values())
+            
+            puestos_procesados += 1
+            if puestos_procesados % 10 == 0:
+                print(f"    ... procesados {puestos_procesados}/{len(puestos_descubiertos)} puestos")
+
+        print(f"  Finalizado procesamiento de {muni}. Acumulado en ejecucion: +{gran['ins']} insertados.")
 
     conn.close()
-    print(f"\nLISTO - Total insertadas: {gran['ins']} | omitidas: {gran['skip']}")
+    print(f"\nLISTO - Proceso completado. Total insertadas: {gran['ins']} | omitidas: {gran['skip']}")
 
 
 if __name__ == "__main__":
@@ -210,6 +297,6 @@ if __name__ == "__main__":
         sys.exit(f"Municipios no reconocidos: {invalidos}. Validos: {list(MUNICIPIOS)}")
 
     if args.preflight:
-        preflight(munis)
+        preflight(munis, offline=args.offline)
     else:
         run(munis, offline=args.offline)

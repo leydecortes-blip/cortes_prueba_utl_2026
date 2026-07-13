@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="es" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados Congreso 2026 - Boyaca</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<style>
+  :root{
+    --marca:#1C283D; --marca-2:#47658F;
+    --bg:#F5F6F8; --panel:#FFFFFF; --linea:#E4E8EE;
+    --texto:#1A1F2E; --suave:#5B6472; --tenue:#8A94A6;
+  }
+  [data-theme="dark"]{
+    --marca:#A6C0E6; --marca-2:#6E8CBB;
+    --bg:#0E1420; --panel:#161D2B; --linea:#28303F;
+    --texto:#E7EBF1; --suave:#9CA6B6; --tenue:#6B788C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--texto);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  .banda{height:5px;display:flex}
+  .banda span{flex:1}
+  header{background:var(--marca); color:#fff; padding:26px 28px 22px; position:relative}
+  [data-theme="dark"] header{background:#111725; color:var(--texto)}
+  .eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#B9C6DC; margin:0 0 6px}
+  [data-theme="dark"] .eyebrow{color:var(--marca-2)}
+  header h1{margin:0; font-size:26px; font-weight:700; letter-spacing:-.01em}
+  header p.sub{margin:8px 0 0; color:#C7D2E4; font-size:14px; max-width:66ch; line-height:1.5}
+  [data-theme="dark"] header p.sub{color:var(--suave)}
+  .toggle{position:absolute; top:24px; right:24px; background:rgba(255,255,255,.12); color:#fff;
+    border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:7px 14px; font-size:12.5px; cursor:pointer}
+  [data-theme="dark"] .toggle{background:var(--panel); color:var(--texto); border-color:var(--linea)}
+  main{max-width:980px; margin:0 auto; padding:26px 20px 50px}
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px}
+  .kpi{background:var(--panel); border:1px solid var(--linea); border-radius:12px; padding:16px 18px 14px}
+  .kpi .n{font-size:25px; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+  .kpi .l{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--tenue); margin-top:5px}
+  .tabs{display:flex; gap:4px; border-bottom:1px solid var(--linea); margin-bottom:0}
+  .tab{background:none; border:none; padding:13px 18px; font-size:14px; font-family:inherit; cursor:pointer;
+    color:var(--suave); border-bottom:2px solid transparent; margin-bottom:-1px; letter-spacing:.01em}
+  .tab:hover{color:var(--texto)}
+  .tab.activo{color:var(--marca-2); border-bottom-color:var(--marca-2); font-weight:600}
+  [data-theme="dark"] .tab.activo{color:var(--texto); border-bottom-color:var(--marca-2)}
+  .panel{display:none; background:var(--panel); border:1px solid var(--linea); border-top:none;
+    border-radius:0 0 14px 14px; padding:22px 24px 20px}
+  .panel.activo{display:block}
+  .cab{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:4px; flex-wrap:wrap}
+  .cab h2{margin:0; font-size:18px; font-weight:700; letter-spacing:-.01em}
+  .cab p{margin:7px 0 0; color:var(--suave); font-size:13.5px; max-width:66ch; line-height:1.5}
+  .controles{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  select{background:var(--bg); color:var(--texto); border:1px solid var(--linea);
+    border-radius:9px; padding:8px 12px; font-size:13.5px; font-family:inherit; cursor:pointer}
+  .btn-csv{background:transparent; color:var(--marca-2); border:1px solid var(--linea);
+    border-radius:9px; padding:8px 12px; font-size:12.5px; cursor:pointer; font-family:inherit}
+  .btn-csv:hover{border-color:var(--marca-2)}
+  .badge{display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+    background:var(--bg); border:1px solid var(--linea); border-radius:999px; padding:6px 14px; font-size:13px}
+  .badge b{font-weight:700}
+  .dot{width:10px; height:10px; border-radius:50%}
+  .grafica{width:100%; margin-top:10px}
+  @media(max-width:640px){ header h1{font-size:21px} .kpis{grid-template-columns:repeat(2,1fr)}
+    main{padding:18px 12px 36px} .tab{padding:11px 12px; font-size:13px} }
+</style>
+</head>
+<body>
+<div class="banda">
+  <span style="background:#007C34"></span><span style="background:#7B2D8B"></span>
+  <span style="background:#1E477D"></span><span style="background:#E07B00"></span>
+</div>
+<header>
+  <button class="toggle" id="toggle">Modo oscuro</button>
+  <p class="eyebrow">Elecciones Congreso de la Republica 2026</p>
+  <h1>Resultados de Boyaca por puesto de votacion</h1>
+  <p class="sub">Tunja, Paipa, Sogamoso y Duitama. Datos oficiales de la Registraduria consolidados a nivel de puesto, comparando Camara y Senado.</p>
+</header>
+
+<main>
+  <div class="kpis" id="kpis"></div>
+
+  <div class="tabs">
+    <button class="tab activo" data-tab="comparativo">Comparativo</button>
+    <button class="tab" data-tab="municipio">Por municipio</button>
+    <button class="tab" data-tab="arrastre">Arrastre Verde</button>
+  </div>
+
+  <div class="panel activo" id="p-comparativo">
+    <div class="cab">
+      <div>
+        <h2>Votos de Camara por municipio</h2>
+        <p>Votos a Camara de cada municipio, separados por partido. El bloque gris agrupa a los partidos sin homologacion.</p>
+      </div>
+      <button class="btn-csv" data-csv="comparativo">Exportar CSV</button>
+    </div>
+    <div id="g-comparativo" class="grafica" style="height:420px"></div>
+  </div>
+
+  <div class="panel" id="p-municipio">
+    <div class="cab">
+      <div>
+        <h2>Top 10 candidatos de Camara</h2>
+        <p>Los diez candidatos con mas votos a Camara en el municipio que elijas.</p>
+      </div>
+      <div class="controles">
+        <select id="sel-muni"></select>
+        <button class="btn-csv" data-csv="municipio">Exportar CSV</button>
+      </div>
+    </div>
+    <div id="badge-lider"></div>
+    <div id="g-municipio" class="grafica" style="height:430px"></div>
+  </div>
+
+  <div class="panel" id="p-arrastre">
+    <div class="cab">
+      <div>
+        <h2>Arrastre del voto Verde hacia Senado</h2>
+      <div class="controles">
+        <select id="sel-arr"></select>
+        <button class="btn-csv" data-csv="arrastre">Exportar CSV</button>
+      </div>
+    </div>
+    <div id="g-arrastre" class="grafica" style="height:470px"></div>
+  </div>
+</main>
+
+<script>
+const DATA = {"kpi": {"votos": 361804, "partidos": 25, "puestos": 73, "municipios": 4}, "comparativo": {"DUITAMA": {"VERDE": 6063, "PACTO": 17305, "CD": 5144, "CONSERVADOR": 5869, "OTROS": 10311}, "PAIPA": {"VERDE": 5129, "PACTO": 2332, "CD": 1186, "CONSERVADOR": 1461, "OTROS": 1852}, "SOGAMOSO": {"VERDE": 8086, "PACTO": 13163, "CD": 5416, "CONSERVADOR": 9700, "OTROS": 14516}, "TUNJA": {"VERDE": 15827, "PACTO": 19943, "CD": 7734, "CONSERVADOR": 6715, "OTROS": 22227}}, "por_municipio": {"DUITAMA": [{"cand": "HECTOR DAVID CHAPARRO CHAPARRO", "canonico": "CONSERVADOR", "votos": 4176}, {"cand": "JAIME RAUL SALAMANCA TORRES", "canonico": "VERDE", "votos": 2055}, {"cand": "HERNEL DAVID ORTEGA GOMEZ", "canonico": "PARTIDO_LIBERAL", "votos": 1444}, {"cand": "RAMIRO BARRAGAN ADAME", "canonico": "VERDE", "votos": 1415}, {"cand": "YAMIT NOE HURTADO NEIRA", "canonico": "VERDE", "votos": 1227}, {"cand": "INGRID MARLEN SOGAMOSO ALFONSO", "canonico": "PARTIDO_LIBERAL", "votos": 1072}, {"cand": "NANCY YANETH ZAPATA PACHON", "canonico": "MIRA", "votos": 1019}, {"cand": "JICLY ESGARDO MUTIS ISAZA", "canonico": "CD", "votos": 980}, {"cand": "JOSE DARIO MAHECHA CASTILLO", "canonico": "PARTIDO_LIBERAL", "votos": 838}, {"cand": "EDUAR ALEXIS TRIANA RINCON", "canonico": "CD", "votos": 837}], "PAIPA": [{"cand": "YAMIT NOE HURTADO NEIRA", "canonico": "VERDE", "votos": 3367}, {"cand": "JAIME RAUL SALAMANCA TORRES", "canonico": "VERDE", "votos": 1042}, {"cand": "HECTOR DAVID CHAPARRO CHAPARRO", "canonico": "CONSERVADOR", "votos": 964}, {"cand": "EDUAR ALEXIS TRIANA RINCON", "canonico": "CD", "votos": 559}, {"cand": "WILDER IVAN SUESCA OCHOA", "canonico": "PARTIDO_LIBERAL", "votos": 513}, {"cand": "RAMIRO BARRAGAN ADAME", "canonico": "VERDE", "votos": 261}, {"cand": "OSCAR LEONARDO AVILA ROMERO", "canonico": "CONSERVADOR", "votos": 201}, {"cand": "NANCY YANETH ZAPATA PACHON", "canonico": "MIRA", "votos": 195}, {"cand": "OSCAR YOVANY MONTENEGRO SALCEDO", "canonico": "COLOMBIA_JUSTA_LIBRES", "votos": 130}, {"cand": "HERNEL DAVID ORTEGA GOMEZ", "canonico": "PARTIDO_LIBERAL", "votos": 127}], "SOGAMOSO": [{"cand": "HECTOR DAVID CHAPARRO CHAPARRO", "canonico": "CONSERVADOR", "votos": 5568}, {"cand": "RAMIRO BARRAGAN ADAME", "canonico": "VERDE", "votos": 2771}, {"cand": "DIANA PAOLA HERRERA NUNEZ", "canonico": "CONSERVADOR", "votos": 1962}, {"cand": "JAIME RAUL SALAMANCA TORRES", "canonico": "VERDE", "votos": 1757}, {"cand": "NADIA ALEXANDRA CARRENO AVELLA", "canonico": "COLOMBIA_JUSTA_LIBRES", "votos": 1736}, {"cand": "FABIAN CAMILO ROJAS BARRERA", "canonico": "COLOMBIA_JUSTA_LIBRES", "votos": 1380}, {"cand": "YURY NEILL DIAZ ARANGUREN", "canonico": "MIRA", "votos": 1342}, {"cand": "JAIRO ENRIQUE CASTIBLANCO PARRA", "canonico": "MIRA", "votos": 1319}, {"cand": "OSCAR LEONARDO AVILA ROMERO", "canonico": "CONSERVADOR", "votos": 1237}, {"cand": "YAMIT NOE HURTADO NEIRA", "canonico": "VERDE", "votos": 1201}], "TUNJA": [{"cand": "RAMIRO BARRAGAN ADAME", "canonico": "VERDE", "votos": 4290}, {"cand": "JAIME RAUL SALAMANCA TORRES", "canonico": "VERDE", "votos": 3984}, {"cand": "YAMIT NOE HURTADO NEIRA", "canonico": "VERDE", "votos": 3930}, {"cand": "INGRID MARLEN SOGAMOSO ALFONSO", "canonico": "PARTIDO_LIBERAL", "votos": 2902}, {"cand": "FABIAN CAMILO ROJAS BARRERA", "canonico": "COLOMBIA_JUSTA_LIBRES", "votos": 2847}, {"cand": "WILDER IVAN SUESCA OCHOA", "canonico": "PARTIDO_LIBERAL", "votos": 2756}, {"cand": "HECTOR DAVID CHAPARRO CHAPARRO", "canonico": "CONSERVADOR", "votos": 2340}, {"cand": "JOSE DARIO MAHECHA CASTILLO", "canonico": "PARTIDO_LIBERAL", "votos": 2242}, {"cand": "OSCAR LEONARDO AVILA ROMERO", "canonico": "CONSERVADOR", "votos": 2180}, {"cand": "JAIRO ENRIQUE CASTIBLANCO PARRA", "canonico": "MIRA", "votos": 1911}]}, "lider_se": {"DUITAMA": {"canonico": "PACTO", "votos": 15423}, "PAIPA": {"canonico": "VERDE", "votos": 4161}, "SOGAMOSO": {"canonico": "PACTO", "votos": 13957}, "TUNJA": {"canonico": "PACTO", "votos": 18575}}, "arrastre": {"DUITAMA": [{"puesto": "COL SANTO T DE AQUINO SD PRIA 2", "ca": 227, "se": 344, "ratio": 1.515}, {"puesto": "COL JESUS EUCARISTIA", "ca": 243, "se": 364, "ratio": 1.498}, {"puesto": "SURBA Y BONZA", "ca": 220, "se": 319, "ratio": 1.45}, {"puesto": "COL GUILLERMO LEON VALENCIA", "ca": 838, "se": 1200, "ratio": 1.432}, {"puesto": "U.P.T.C.", "ca": 610, "se": 834, "ratio": 1.367}, {"puesto": "COL LA NUEVA FAMILIA", "ca": 366, "se": 495, "ratio": 1.352}, {"puesto": "COLEGIO SALESIANO", "ca": 364, "se": 472, "ratio": 1.297}, {"puesto": "PARQUE LA ESPERANZA", "ca": 323, "se": 415, "ratio": 1.285}, {"puesto": "AVENDAÑOS", "ca": 15, "se": 19, "ratio": 1.267}, {"puesto": "COLEGIO SEMINARIO", "ca": 439, "se": 554, "ratio": 1.262}, {"puesto": "COLEGIO SIMON BOLIVAR", "ca": 435, "se": 543, "ratio": 1.248}, {"puesto": "SALON COMUNAL TOCOGUA", "ca": 62, "se": 77, "ratio": 1.242}, {"puesto": "COLEGIO BOYACA", "ca": 760, "se": 924, "ratio": 1.216}, {"puesto": "COL SANTO T DE AQUINO SD PRIA 1", "ca": 310, "se": 371, "ratio": 1.197}, {"puesto": "SIRATA", "ca": 39, "se": 45, "ratio": 1.154}, {"puesto": "COL.FRANCISCO DE PAULA SANTAN", "ca": 369, "se": 416, "ratio": 1.127}, {"puesto": "SAN ANTONIO NORTE", "ca": 220, "se": 221, "ratio": 1.005}, {"puesto": "QUEBRADA DE BECERRA", "ca": 52, "se": 51, "ratio": 0.981}, {"puesto": "COLEGIO JAIRO ANIBAL NIÑO", "ca": 165, "se": 159, "ratio": 0.964}, {"puesto": "CARCEL", "ca": 6, "se": 2, "ratio": 0.333}], "PAIPA": [{"puesto": "PANTANO DE VARGAS", "ca": 246, "se": 155, "ratio": 0.63}, {"puesto": "I.E.EL ROSARIO SEDE CAMPESTRE", "ca": 963, "se": 602, "ratio": 0.625}, {"puesto": "I.E. EL ROSARIO SEDE CENTRAL", "ca": 1546, "se": 930, "ratio": 0.602}, {"puesto": "I.E.TOMAS VASQUEZ RODRIGUEZ", "ca": 2017, "se": 1183, "ratio": 0.587}, {"puesto": "EL VENADO", "ca": 25, "se": 9, "ratio": 0.36}, {"puesto": "PALERMO", "ca": 332, "se": 62, "ratio": 0.187}], "SOGAMOSO": [{"puesto": "LA PLAYITA", "ca": 15, "se": 35, "ratio": 2.333}, {"puesto": "EL CRUCERO", "ca": 12, "se": 19, "ratio": 1.583}, {"puesto": "LAS CINTAS", "ca": 12, "se": 14, "ratio": 1.167}, {"puesto": "COL NZADO GUSTAVO JIMENEZ", "ca": 276, "se": 320, "ratio": 1.159}, {"puesto": "IE LIBERTADOR", "ca": 752, "se": 817, "ratio": 1.086}, {"puesto": "COL POLITÉCNICO", "ca": 513, "se": 553, "ratio": 1.078}, {"puesto": "IEPAGS SEDE ROSARIO", "ca": 722, "se": 754, "ratio": 1.044}, {"puesto": "IE FRANCISCO DE PAULA SANTANDER", "ca": 684, "se": 708, "ratio": 1.035}, {"puesto": "IE MAGDALENA", "ca": 921, "se": 953, "ratio": 1.035}, {"puesto": "IE SUGAMUXI", "ca": 656, "se": 675, "ratio": 1.029}, {"puesto": "COL REYES PATRIA", "ca": 553, "se": 560, "ratio": 1.013}, {"puesto": "IE INSEANDES", "ca": 642, "se": 642, "ratio": 1.0}, {"puesto": "CÁRCEL DEL CIRCUITO", "ca": 3, "se": 3, "ratio": 1.0}, {"puesto": "COLEGIO CELCO", "ca": 485, "se": 479, "ratio": 0.988}, {"puesto": "MORCA", "ca": 51, "se": 49, "ratio": 0.961}, {"puesto": "IE SILVESTRE ARENAS", "ca": 165, "se": 156, "ratio": 0.945}, {"puesto": "IE INTEGRADO JOAQUIN GONZALEZ CAM", "ca": 896, "se": 835, "ratio": 0.932}, {"puesto": "UNIVERSIDAD DE BOYACA SEDE SOGAMOSO", "ca": 728, "se": 623, "ratio": 0.856}], "TUNJA": [{"puesto": "N. S. LEONOR ALVAREZ PINZON PRIMARIA", "ca": 205, "se": 243, "ratio": 1.185}, {"puesto": "IE NORMAL SUPERIOR SD JARDIN NACIONAL", "ca": 275, "se": 313, "ratio": 1.138}, {"puesto": "I.E GUSTAVO ROJAS PINILLA SD CENTRAL", "ca": 671, "se": 762, "ratio": 1.136}, {"puesto": "COLISEO I.R.D.ET", "ca": 821, "se": 917, "ratio": 1.117}, {"puesto": "IE LIBERTADOR SIMON BOLIVAR SEDE CENTRAL", "ca": 514, "se": 573, "ratio": 1.115}, {"puesto": "IE LIBERTADOR SIMON BOLIVAR SN FRANCISCO", "ca": 397, "se": 434, "ratio": 1.093}, {"puesto": "AUDITORIO GUSTAVO M CASTELLANOS COMFABOY", "ca": 715, "se": 778, "ratio": 1.088}, {"puesto": "COL DE BOYACA SD JOSE IGNACIO DE MARQUEZ", "ca": 493, "se": 521, "ratio": 1.057}, {"puesto": "I.E. ANTONIO JOSE SANDOVAL GOMEZ", "ca": 327, "se": 345, "ratio": 1.055}, {"puesto": "COLEGIO SALESIANO MALDONADO", "ca": 1083, "se": 1142, "ratio": 1.054}, {"puesto": "I.T. GONZALO SUAREZ RENDON SEDE CENTRAL", "ca": 591, "se": 619, "ratio": 1.047}, {"puesto": "C.A.S.D. BARRIO SAN ANTONIO", "ca": 651, "se": 656, "ratio": 1.008}, {"puesto": "COL. BOYACA FCO DE PAULA SANTANDER", "ca": 986, "se": 990, "ratio": 1.004}, {"puesto": "CARCEL", "ca": 5, "se": 5, "ratio": 1.0}, {"puesto": "PUESTO CENSO (COL. BOY SAN AGUSTIN)", "ca": 911, "se": 908, "ratio": 0.997}, {"puesto": "UNIVERSIDAD JUAN DE CASTELLANOS", "ca": 1230, "se": 1224, "ratio": 0.995}, {"puesto": "COLISEO UNIBOYACA", "ca": 901, "se": 888, "ratio": 0.986}, {"puesto": "IES JUAN CASTELLANOS SD CRISANTO LUQUE", "ca": 953, "se": 936, "ratio": 0.982}, {"puesto": "INEM CARLOS ARTURO TORRES SD CENTRAL", "ca": 627, "se": 612, "ratio": 0.976}, {"puesto": "I.E. SILVINO RODRIGUEZ SD MANZANARES", "ca": 126, "se": 122, "ratio": 0.968}, {"puesto": "UNIVERSIDAD SANTO TOMAS", "ca": 903, "se": 865, "ratio": 0.958}, {"puesto": "COLISEO SAN ANTONIO", "ca": 564, "se": 537, "ratio": 0.952}, {"puesto": "PUENTE DE BOYACA", "ca": 53, "se": 35, "ratio": 0.66}, {"puesto": "COLISEO CUBIERTO MUNICIPAL", "ca": 904, "se": 0, "ratio": 0.0}, {"puesto": "COLISEO MUNICIPAL COMFABOY", "ca": 921, "se": 0, "ratio": 0.0}]}, "municipios": ["DUITAMA", "PAIPA", "SOGAMOSO", "TUNJA"], "nombre_largo": {"VERDE": "Alianza Verde", "PACTO": "Pacto Historico", "CD": "Centro Democratico", "CONSERVADOR": "Partido Conservador", "OTROS": "Otros partidos"}};
+const COLOR = {VERDE:"#007C34", PACTO:"#7B2D8B", CD:"#1E477D", CONSERVADOR:"#E07B00", OTROS:"#8A94A6"};
+const ORDEN = ["VERDE","PACTO","CD","CONSERVADOR","OTROS"];
+const NL = DATA.nombre_largo;
+
+function etiqueta(c){ return NL[c] || c || "Otro"; }
+function colorDe(c){ return COLOR[c] || "#8A94A6"; }
+function css(v){ return getComputedStyle(document.body).getPropertyValue(v).trim(); }
+function miles(n){ return Number(n).toLocaleString('es-CO'); }
+
+function layoutBase(){
+  const texto=css('--texto'), linea=css('--linea'), suave=css('--suave');
+  return {
+    paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:texto, family:'-apple-system,Segoe UI,Roboto,sans-serif', size:12.5},
+    margin:{l:60,r:24,t:14,b:52},
+    xaxis:{gridcolor:linea, zerolinecolor:linea, tickfont:{color:suave}, automargin:true},
+    yaxis:{gridcolor:linea, zerolinecolor:linea, tickfont:{color:suave}, automargin:true},
+    legend:{orientation:'h', y:1.14, x:0, font:{color:suave, size:12}},
+    hoverlabel:{font:{family:'-apple-system,Segoe UI,Roboto,sans-serif'}},
+    bargap:0.35,
+  };
+}
+const CONF = {responsive:true, displayModeBar:false};
+
+function renderComparativo(){
+  const munis = DATA.municipios;
+  const trazas = ORDEN.map(part => ({
+    x:munis, y:munis.map(m => DATA.comparativo[m][part]),
+    name:etiqueta(part), type:'bar', marker:{color:colorDe(part)},
+    hovertemplate:'%{x}<br>'+etiqueta(part)+': %{y:,} votos<extra></extra>',
+  }));
+  const lay = layoutBase();
+  lay.barmode='stack';
+  lay.yaxis.title={text:'Votos de Camara', font:{color:css('--suave')}};
+  lay.annotations = munis.map(m => {
+    const tot = ORDEN.reduce((s,p)=>s+DATA.comparativo[m][p],0);
+    return {x:m, y:tot, text:miles(tot), showarrow:false, yshift:12, font:{color:css('--suave'), size:12}};
+  });
+  Plotly.react('g-comparativo', trazas, lay, CONF);
+}
+
+function renderMunicipio(){
+  const muni = document.getElementById('sel-muni').value;
+  const filas = (DATA.por_municipio[muni]||[]).slice().reverse();
+  const traza = [{
+    x:filas.map(f=>f.votos), y:filas.map(f=>f.cand), type:'bar', orientation:'h',
+    marker:{color:filas.map(f=>colorDe(f.canonico))},
+    text:filas.map(f=>miles(f.votos)), textposition:'outside', textfont:{color:css('--suave'), size:11},
+    customdata:filas.map(f=>etiqueta(f.canonico)),
+    hovertemplate:'%{y}<br>%{customdata}<br>%{x:,} votos<extra></extra>', cliponaxis:false,
+  }];
+  const lay = layoutBase();
+  lay.margin.l=210; lay.margin.r=70;
+  lay.xaxis.title={text:'Votos Camara', font:{color:css('--suave')}};
+  Plotly.react('g-municipio', traza, lay, CONF);
+
+  const l = DATA.lider_se[muni];
+  document.getElementById('badge-lider').innerHTML = l
+    ? '<span class="badge"><span class="dot" style="background:'+colorDe(l.canonico)+'"></span>'
+      + 'Partido lider en Senado: <b>'+etiqueta(l.canonico)+'</b> ('+miles(l.votos)+' votos)</span>' : '';
+}
+
+function renderArrastre(){
+  const muni = document.getElementById('sel-arr').value;
+  const filas = DATA.arrastre[muni]||[];
+  const traza = [{
+    x:filas.map(f=>f.ratio), y:filas.map(f=>f.puesto), type:'bar', orientation:'h',
+    marker:{color:filas.map(f=> f.ratio>=1 ? COLOR.VERDE : '#C0553B')},
+    text:filas.map(f=>f.ratio.toFixed(2)), textposition:'outside', textfont:{color:css('--suave'), size:11},
+    customdata:filas.map(f=>[f.ca,f.se]),
+    hovertemplate:'%{y}<br>Ratio SE/CA: %{x}<br>Verde CA: %{customdata[0]:,}  Verde SE: %{customdata[1]:,}<extra></extra>',
+    cliponaxis:false,
+  }];
+  const lay = layoutBase();
+  lay.margin.l=220; lay.margin.r=50;
+  lay.xaxis.title={text:'Votos Senado por cada voto Camara (Verde)', font:{color:css('--suave')}};
+  lay.shapes=[{type:'line', x0:1, x1:1, y0:-0.5, y1:filas.length-0.5,
+    line:{color:css('--suave'), width:1.5, dash:'dash'}}];
+  Plotly.react('g-arrastre', traza, lay, CONF);
+}
+
+const RENDER = {comparativo:renderComparativo, municipio:renderMunicipio, arrastre:renderArrastre};
+let TAB_ACTUAL = 'comparativo';
+
+function descargarCSV(nombre, filas){
+  const csv = filas.map(r=>r.map(c=>{
+    const s=String(c); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+  }).join(',')).join('\n');
+  const blob = new Blob(["\ufeff"+csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = nombre; a.click(); URL.revokeObjectURL(a.href);
+}
+function exportar(tipo){
+  if(tipo==='comparativo'){
+    const f=[['municipio','partido','votos_camara']];
+    DATA.municipios.forEach(m=>ORDEN.forEach(p=>f.push([m, etiqueta(p), DATA.comparativo[m][p]])));
+    descargarCSV('comparativo_camara_municipios.csv', f);
+  } else if(tipo==='municipio'){
+    const m=document.getElementById('sel-muni').value;
+    const f=[['municipio','candidato','partido','votos_camara']];
+    (DATA.por_municipio[m]||[]).forEach(r=>f.push([m, r.cand, etiqueta(r.canonico), r.votos]));
+    descargarCSV('top10_camara_'+m+'.csv', f);
+  } else {
+    const m=document.getElementById('sel-arr').value;
+    const f=[['municipio','puesto','verde_ca','verde_se','arrastre_se_ca']];
+    (DATA.arrastre[m]||[]).forEach(r=>f.push([m, r.puesto, r.ca, r.se, r.ratio]));
+    descargarCSV('arrastre_verde_'+m+'.csv', f);
+  }
+}
+
+function mostrarTab(nombre){
+  TAB_ACTUAL = nombre;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('activo', t.dataset.tab===nombre));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('activo', p.id==='p-'+nombre));
+  RENDER[nombre]();  // se dibuja con el panel ya visible, asi toma el tamano correcto
+}
+
+(function init(){
+  const k = DATA.kpi;
+  const items = [
+    [miles(k.votos), 'Votos totales'],
+    [k.partidos, 'Partidos'],
+    [k.puestos, 'Puestos'],
+    [k.municipios, 'Municipios'],
+  ];
+  document.getElementById('kpis').innerHTML = items.map(
+    it => '<div class="kpi"><div class="n">'+it[0]+'</div><div class="l">'+it[1]+'</div></div>').join('');
+
+  const selM=document.getElementById('sel-muni'), selA=document.getElementById('sel-arr');
+  DATA.municipios.forEach(m=>{
+    selM.insertAdjacentHTML('beforeend','<option>'+m+'</option>');
+    if(DATA.arrastre[m]) selA.insertAdjacentHTML('beforeend','<option>'+m+'</option>');
+  });
+  selM.addEventListener('change', renderMunicipio);
+  selA.addEventListener('change', renderArrastre);
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>mostrarTab(t.dataset.tab)));
+  document.querySelectorAll('[data-csv]').forEach(b=>b.addEventListener('click',()=>exportar(b.dataset.csv)));
+
+  const toggle=document.getElementById('toggle');
+  toggle.addEventListener('click',()=>{
+    const oscuro=document.body.getAttribute('data-theme')==='dark';
+    document.body.setAttribute('data-theme', oscuro?'light':'dark');
+    toggle.textContent = oscuro?'Modo oscuro':'Modo claro';
+    RENDER[TAB_ACTUAL]();  // re-dibuja la pestana visible con el nuevo tema
+  });
+
+  mostrarTab('comparativo');
+})();
+</script>
+</body>
+</html>
