@@ -142,6 +142,39 @@ def main():
     for r in r3_3.get("filas", []):
         print(f"  {r['candidato']} | {r['partido']} | {r['votos_cand']} | {r['atribucion_se']}")
 
+    print("")
+    print("RETO 5 - Visualizaciones Python")
+
+    VIZ_DIR = os.path.join(ROOT, "viz")
+    heatmap_path  = os.path.join(VIZ_DIR, "heatmap_municipios.png")
+    scatter_path  = os.path.join(VIZ_DIR, "scatter_ca_se.png")
+
+    ok_heatmap  = os.path.exists(heatmap_path)  and os.path.getsize(heatmap_path)  > 10_000
+    ok_scatter  = os.path.exists(scatter_path)  and os.path.getsize(scatter_path)  > 10_000
+
+    scatter_stats = {"r": None, "pendiente": None, "n_mesas": None}
+    # Leer las stats que scatter.py deja en viz/scatter_stats.txt al correr.
+    # Esto evita problemas de interprete: el usuario corre scatter.py con el Python
+    # que tenga numpy, y el manifest solo lee el archivo resultante.
+    stats_txt = os.path.join(VIZ_DIR, "scatter_stats.txt")
+    if os.path.exists(stats_txt):
+        try:
+            linea = open(stats_txt, encoding="utf-8").readline().strip()
+            if linea.startswith("r=") and "pendiente=" in linea and "n_mesas=" in linea:
+                partes = dict(p.split("=") for p in linea.split(" | "))
+                scatter_stats["r"]         = float(partes.get("r", 0))
+                scatter_stats["pendiente"] = float(partes.get("pendiente", 0))
+                scatter_stats["n_mesas"]   = int(partes.get("n_mesas", 0))
+        except Exception as e:
+            print(f"  scatter_stats.txt: ERROR al leer -> {e}")
+    else:
+        print("  scatter_stats.txt: no encontrado. Corre primero: python viz/scatter.py")
+
+    print(f"  heatmap_municipios.png: {'OK' if ok_heatmap else 'FALTA o <10KB'}")
+    print(f"  scatter_ca_se.png     : {'OK' if ok_scatter else 'FALTA o <10KB'}")
+    if scatter_stats['r'] is not None:
+        print(f"  r de Pearson = {scatter_stats['r']} | pendiente = {scatter_stats['pendiente']} | n_mesas = {scatter_stats['n_mesas']}")
+
     manifest = {
         "meta"   : META,
         "reto_1" : {
@@ -159,6 +192,11 @@ def main():
             "tarea_3_1"        : r3_1,
             "tarea_3_2"        : r3_2,
             "tarea_3_3"        : r3_3,
+        },
+        "reto_5": {
+            "heatmap_ok"   : ok_heatmap,
+            "scatter_ok"   : ok_scatter,
+            "scatter_stats": scatter_stats,
         },
     }
 

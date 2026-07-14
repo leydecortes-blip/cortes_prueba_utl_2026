@@ -1,0 +1,1 @@
+r=0.959 | pendiente=0.927 | n_mesas=1051
