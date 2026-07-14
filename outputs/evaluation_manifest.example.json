@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "nombre": "APELLIDO NOMBRE",
+    "email": "correo@ejemplo.com",
+    "repo_url": "https://github.com/usuario/apellido_prueba_utl_2026",
+    "generado": "2026-01-01T00:00:00"
+  },
+  "reto_1": {
+    "municipios_ok": true,
+    "municipios_conteo": "4/4",
+    "municipios": ["DUITAMA", "PAIPA", "SOGAMOSO", "TUNJA"],
+    "archivos_raw": ["0700001_CA.json", "..."],
+    "archivos_raw_ok": true
+  },
+  "reto_2": {
+    "filas_por_tabla": {
+      "municipios": 4,
+      "puestos": 73,
+      "mesas": 1107,
+      "partidos": 25,
+      "candidatos": 1127,
+      "votos": 1216033,
+      "carga_log": 2158
+    },
+    "lider_se": {
+      "DUITAMA":  {"partido_lider": "PACTO",  "votos_se": 15026},
+      "PAIPA":    {"partido_lider": "VERDE",  "votos_se": 3963},
+      "SOGAMOSO": {"partido_lider": "PACTO",  "votos_se": 13749},
+      "TUNJA":    {"partido_lider": "PACTO",  "votos_se": 20147}
+    }
+  },
+  "reto_3": {
+    "tarea_3_1": {"ok": true, "columnas": ["municipio","puesto_codigo","puesto","votos_ca_verde","votos_se_verde","arrastre_se_ca"], "filas": []},
+    "tarea_3_2": {"ok": true, "columnas": ["municipio","puesto","mesa","candidato","partido","corporacion","votos_candidato","votos_partido","pct_dentro_partido"], "filas": []},
+    "tarea_3_3": {"ok": true, "columnas": ["candidato","partido","votos_cand","votos_partido_ca","votos_se_partido","atribucion_se"], "filas": []}
+  },
+  "reto_5": {
+    "heatmap_ok": true,
+    "scatter_ok": true,
+    "scatter_stats": {"r": 0.959, "pendiente": 0.928, "n_mesas": 1051}
+  }
+}
