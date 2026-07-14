@@ -3,3 +3,5 @@ __pycache__/
 .DS_Store
 .env
 db/raw/
+nomenclator.json
+viz/scatter_stats.txt
